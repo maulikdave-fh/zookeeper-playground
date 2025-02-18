@@ -52,8 +52,8 @@ public class LeaderElection implements Watcher {
     }
 
     public void run() throws InterruptedException {
-        synchronized (this) {
-            this.wait();
+        synchronized (zooKeeper) {
+            zooKeeper.wait();
         }
     }
 
@@ -67,9 +67,9 @@ public class LeaderElection implements Watcher {
             if (watchedEvent.getState() == Event.KeeperState.SyncConnected) {
                 LOGGER.info("Successfully connected to Zookeeper");
             } else {
-                synchronized (this) {
+                synchronized (zooKeeper) {
                     LOGGER.info("Received disconnected from Zookeeper event");
-                    this.notifyAll();
+                    zooKeeper.notifyAll();
                 }
             }
         }
